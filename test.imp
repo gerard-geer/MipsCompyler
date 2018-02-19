@@ -1,0 +1,5 @@
+A := 0;
+B := 5;
+C := 10;
+if B <= C then A := 2 else skip;
+while A <= 5 do A := A+1;
