@@ -15,16 +15,25 @@ class Succession(CompileableASTNode):
         self.second = second
     
     def comp(self, out, reg):
+        print 'first line: '+str(type(self.first))
+        print 'second line: '+str(type(self.second))
         r = out.regs.takeReg(out)
-        self.first.comp(out,r)
+        if self.first != None:
+            self.first.comp(out,r)
         if self.second != None:
             self.second.comp(out,r)
         out.regs.returnReg(r,out)
+    
+    def __str__(self):
+        return 'Succession'
+
+    def getChildren(self):
+        return (self.first, self.second)
 
 
 class Assignment(CompileableASTNode):
 
-    __slots__=('loc','val')
+    __slots__=('loc','aexp')
 
     def __init__(self, loc, aexp):
         self.loc = loc
@@ -50,6 +59,12 @@ class Assignment(CompileableASTNode):
 
         # Free r.
         #out.regs.returnReg(r, out)
+    
+    def __str__(self):
+        return 'Assignment'
+
+    def getChildren(self):
+        return (self.loc, self.aexp)
 
 class Skip(CompileableASTNode):
 
@@ -57,6 +72,12 @@ class Skip(CompileableASTNode):
 
     def comp(self, out, reg):
         out.asm += 'nop\n'
+    
+    def __str__(self):
+        return 'Skip'
+
+    def getChildren(self):
+        return None
 
 class IfThenElse(CompileableASTNode):
 
@@ -71,10 +92,16 @@ class IfThenElse(CompileableASTNode):
 
         out.asm += '\n# IfThenElse\n'
         
+        # Generate labels for the various places we'll need to jump around.
+        name = hex(id(self))
+        false_tag = 'false_'+name
+        exit_tag = 'exit_'+name
+
         # Okay first we need a register to store the result of the test.
         r = out.regs.takeReg(out)
         
         # Now let's emit code to do the test.
+        out.asm += '\n# Test section\n'
         self.test.comp(out,r)
 
         # Now we need to emit code to branch to the false section.
@@ -84,14 +111,14 @@ class IfThenElse(CompileableASTNode):
         out.asm += 'beq '+r+', $zero, '+false_tag+'\n'
 
         # At this point we can emit code to do the true section.
-        out.asm += '\n#True section\n'
+        out.asm += '\n# True section\n'
         self.t.comp(out,reg)
 
         # We don't want to flow into the false section, so...
         out.asm += 'j '+exit_tag+'\n'
 
         # And now the false section.
-        out.asm += '\n#False section\n'
+        out.asm += '\n# False section\n'
         out.asm += false_tag+':\n'
         self.f.comp(out,reg)
 
@@ -100,6 +127,12 @@ class IfThenElse(CompileableASTNode):
 
         # Return the test's register to the register gods.
         out.regs.returnReg(r, out)
+    
+    def __str__(self):
+        return 'IfThenElse'
+
+    def getChildren(self):
+        return (self.test, self.t, self.f)
 
 class While(CompileableASTNode):
 
@@ -141,4 +174,10 @@ class While(CompileableASTNode):
 
         # Return the test's register to the register gods.
         out.regs.returnReg(r, out)
+    
+    def __str__(self):
+        return 'While'
+
+    def getChildren(self):
+        return (self.test, self.command)
 

@@ -15,8 +15,8 @@ from comnodes import *
 # Finally we have a quick rule for defining commands.
 def p_command(t):
     '''
-    command : succession
-            | final
+    command : final
+            | succession
             | assignment
             | skip
             | ifthenelse
@@ -37,7 +37,7 @@ def p_final(t):
     '''
     final : command SEMI
     '''
-    t[0] = Succession(t[1],None)
+    t[0] = Succession(None,t[1])
 
 # A quick rule for assignment.
 def p_assignment(t):

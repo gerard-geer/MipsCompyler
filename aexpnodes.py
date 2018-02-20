@@ -17,6 +17,12 @@ class AexpNum(CompileableASTNode):
         # Just load an immediate into the register given to us.
         out.asm += 'li '+reg+', '+str(self.val)+'\n'
 
+    def __str__(self):
+        return 'AexpNum ('+str(self.val)+')'
+
+    def getChildren(self):
+        return None
+
 class AexpLoc(CompileableASTNode):
         
     __slots__=('name')
@@ -27,6 +33,12 @@ class AexpLoc(CompileableASTNode):
     def comp(self, out, reg):
         # This one is pretty easy actually.
         out.asm += 'lw '+reg+', '+self.name+'\n'
+
+    def __str__(self):
+        return 'AexpLoc ('+self.name+')'
+
+    def getChildren(self):
+        return None
 
 class AexpMult(CompileableASTNode):
 
@@ -57,6 +69,12 @@ class AexpMult(CompileableASTNode):
         out.regs.returnReg(r2, out) # Do it in the right order OR ELSE.
         out.regs.returnReg(r1, out)
 
+    def __str__(self):
+        return 'AexpMult'
+
+    def getChildren(self):
+        return (self.l, self.r)
+
 class AexpAdd(CompileableASTNode):
 
     __slots__=('l','r')
@@ -85,6 +103,12 @@ class AexpAdd(CompileableASTNode):
         out.regs.returnReg(r2, out) # Do it in the right order OR ELSE.
         out.regs.returnReg(r1, out)
 
+    def __str__(self):
+        return 'AexpAdd'
+
+    def getChildren(self):
+        return (self.l, self.r)
+
 class AexpSub(CompileableASTNode):
 
     __slots__=('l','r')
@@ -112,3 +136,9 @@ class AexpSub(CompileableASTNode):
         # anymore.
         out.regs.returnReg(r2, out) # Do it in the right order OR ELSE.
         out.regs.returnReg(r1, out)
+
+    def __str__(self):
+        return 'AexpSub'
+
+    def getChildren(self):
+        return (self.l, self.r)

@@ -12,3 +12,9 @@ class CompileableASTNode(object):
     @abstractmethod
     def comp(self, out, reg):
         pass
+    @abstractmethod
+    def __str__(self):
+        pass
+    @abstractmethod
+    def getChildren(self):
+        pass

@@ -14,6 +14,12 @@ class BexpTrue(CompileableASTNode):
         # Having it be MAX_INT speeds some things up.
         out.asm += 'li '+reg+', 0xFFFFFFFF\n'
 
+    def __str__(self):
+        return 'BexpTrue'
+
+    def getChildren(self):
+        return None
+
 class BexpFalse(CompileableASTNode):
         
     __slots__=()
@@ -21,6 +27,12 @@ class BexpFalse(CompileableASTNode):
     def comp(self, out, reg):
         # False, on the other hand, is 0 like always.
         out.asm += 'li '+reg+', 0x00000000\n'
+
+    def __str__(self):
+        return 'BexpFalse'
+
+    def getChildren(self):
+        return None
 
 class BexpNot(CompileableASTNode):
     
@@ -44,6 +56,12 @@ class BexpNot(CompileableASTNode):
 
         # Return our dinnerware to the buttery.
         out.regs.returnReg(r1)
+
+    def __str__(self):
+        return 'BexpFalse'
+
+    def getChildren(self):
+        return (self.r)
 
 class BexpEqu(CompileableASTNode):
 
@@ -76,6 +94,12 @@ class BexpEqu(CompileableASTNode):
         # Return the registers for great good.
         out.regs.returnReg(r2, out)
         out.regs.returnReg(r1, out)
+    
+    def __str__(self):
+        return 'BexpEqu'
+
+    def getChildren(self):
+        return (self.l, self.r)
 
 class BexpLeq(CompileableASTNode):
 
@@ -104,6 +128,12 @@ class BexpLeq(CompileableASTNode):
         # Return the registers for great good.
         out.regs.returnReg(r2, out)
         out.regs.returnReg(r1, out)
+    
+    def __str__(self):
+        return 'BexpLeq'
+
+    def getChildren(self):
+        return (self.l, self.r)
 
 class BexpAnd(CompileableASTNode):
 
@@ -128,6 +158,12 @@ class BexpAnd(CompileableASTNode):
         # Return the registers for great good.
         out.regs.returnReg(r2, out)
         out.regs.returnReg(r1, out)
+    
+    def __str__(self):
+        return 'BexpAnd'
+
+    def getChildren(self):
+        return (self.l, self.r)
 
 class BexpOr(CompileableASTNode):
 
@@ -152,3 +188,9 @@ class BexpOr(CompileableASTNode):
         # Return the registers for great good.
         out.regs.returnReg(r2, out)
         out.regs.returnReg(r1, out)
+    
+    def __str__(self):
+        return 'BexpOr'
+
+    def getChildren(self):
+        return (self.l, self.r)

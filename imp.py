@@ -76,6 +76,8 @@ def main():
     else:
         f = open(argv[2],'w')
         f.write(src)
+    
+    out.printAST()
 
     
             

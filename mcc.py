@@ -17,6 +17,21 @@ class Output():
         self.vars = set()
         self.regs = RegRegistry()
 
+    def _printASTHelper(self, ast, level):
+
+        print '| '*level + str(ast)
+
+        children = ast.getChildren()
+        if children == None:
+            return 
+
+        for child in children:
+            if child != None: # Argh inner conditionals
+                self._printASTHelper(child, level+1)
+
+    def printAST(self):
+        self._printASTHelper(self.ast, 0)
+
     def _compile(self):
 
         # Get a starting register in case the top level instruction needs one.
